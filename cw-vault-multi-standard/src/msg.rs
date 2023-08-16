@@ -14,9 +14,10 @@ use schemars::JsonSchema;
 /// enum and then passing it as the generic argument `T` to this enum.
 #[cw_serde]
 pub enum VaultStandardExecuteMsg<T = ExtensionExecuteMsg> {
-    /// Called to deposit a single asset into the vault. Native assets are passed in the funds
-    /// parameter.
-    SingleDeposit {
+    /// Called to deposit an any of the assets into the vault. Assets are passed in the funds parameter.
+    /// This should functions as a deposit function that "just handles the deposit", it might swap user funds to
+    /// the ratio needed. This should support both single sided deposits aswell as unbalanced deposits
+    AnyDeposit {
         /// The amount of tokens to deposit.
         amount: Uint128,
         /// the asset to deposit
@@ -27,9 +28,9 @@ pub enum VaultStandardExecuteMsg<T = ExtensionExecuteMsg> {
     },
 
     /// Called to deposit multiple assets into the vault. The assets should be passed in the funds
-    /// parameter. The vault should choose to either consume part of the assets and refund the rest
-    /// or consume all assets and reject the deposit if all assets cannot be consumed.
-    MultiDeposit {
+    /// parameter. The vault should either accept funds in the correct ratio and error on incorrect ratio's,
+    /// or refund and funds that are not in the correct ratio
+    ExactDeposit {
         /// The optional recipient of the vault token. If not set, the caller
         /// address will be used instead.
         recipient: Option<String>,
