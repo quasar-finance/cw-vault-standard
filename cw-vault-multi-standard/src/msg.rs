@@ -179,7 +179,7 @@ where
     /// price-per-share, and instead should reflect the "average-user’s"
     /// price-per-share, meaning what the average user should expect to see
     /// when exchanging to and from.
-    #[returns(Uint128)]
+    #[returns(Vec<Coin>)]
     ConvertToAssets {
         /// The amount of vault tokens to convert to base tokens.
         amount: Uint128,
