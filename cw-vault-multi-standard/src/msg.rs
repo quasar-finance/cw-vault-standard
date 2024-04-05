@@ -6,7 +6,7 @@ use crate::extensions::keeper::{KeeperExecuteMsg, KeeperQueryMsg};
 use crate::extensions::lockup::{LockupExecuteMsg, LockupQueryMsg};
 
 use cosmwasm_schema::{cw_serde, QueryResponses};
-use cosmwasm_std::{to_binary, Coin, CosmosMsg, Empty, StdResult, Uint128, WasmMsg};
+use cosmwasm_std::{to_json_binary, Coin, CosmosMsg, Empty, StdResult, Uint128, WasmMsg};
 use schemars::JsonSchema;
 
 /// The default ExecuteMsg variants that all vaults must implement.
@@ -63,7 +63,7 @@ impl VaultStandardExecuteMsg {
     pub fn into_cosmos_msg(self, contract_addr: String, funds: Vec<Coin>) -> StdResult<CosmosMsg> {
         Ok(WasmMsg::Execute {
             contract_addr,
-            msg: to_binary(&self)?,
+            msg: to_json_binary(&self)?,
             funds,
         }
         .into())
@@ -104,7 +104,7 @@ where
 
     /// Returns `Uint128` amount of vault tokens that will be returned for the
     /// passed in assets. If the vault cannot accept this set tokens,  
-    /// the query should error. This can be due to wrong ratio's, or 
+    /// the query should error. This can be due to wrong ratio's, or
     /// missing or superfluous assets
     ///
     /// Allows an on-chain or off-chain user to simulate the effects of their
@@ -120,12 +120,11 @@ where
         assets: Vec<Coin>,
     },
 
-
-    /// Returns the ratio in which the underlying assets should be deposited. 
-    /// If no ratio is applicable, should return None. Ratios are expressed 
-    /// as a Vec<Coin>. This should be interpreted as a deposit should be 
+    /// Returns the ratio in which the underlying assets should be deposited.
+    /// If no ratio is applicable, should return None. Ratios are expressed
+    /// as a Vec<Coin>. This should be interpreted as a deposit should be
     /// some multiplicative of the returned vec.
-    /// 
+    ///
     /// A vault does not have to guarantee that this ratio is stable.
     #[returns(Vec<Coin>)]
     DepositRatio,
