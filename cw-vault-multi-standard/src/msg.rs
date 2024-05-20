@@ -6,7 +6,7 @@ use crate::extensions::keeper::{KeeperExecuteMsg, KeeperQueryMsg};
 use crate::extensions::lockup::{LockupExecuteMsg, LockupQueryMsg};
 
 use cosmwasm_schema::{cw_serde, QueryResponses};
-use cosmwasm_std::{to_json_binary, Coin, CosmosMsg, Empty, StdResult, Uint128, WasmMsg};
+use cosmwasm_std::{to_json_binary, Coin, CosmosMsg, Decimal, Empty, StdResult, Uint128, WasmMsg};
 use schemars::JsonSchema;
 
 /// The default ExecuteMsg variants that all vaults must implement.
@@ -25,6 +25,8 @@ pub enum VaultStandardExecuteMsg<T = ExtensionExecuteMsg> {
         /// The optional recipient of the vault token. If not set, the caller
         /// address will be used instead.
         recipient: Option<String>,
+        /// The maximum slippage allowed for swap between vault assets for deposit
+        max_slippage: Decimal,
     },
 
     /// Called to deposit multiple assets into the vault. The assets should be passed in the funds
